@@ -27,13 +27,27 @@ const scope = {
 
     changePerson();
 
-    // Log D: personC
-
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    // Log D: personC 
+    const result = [
+      {A: 'Ben'}, 
+      {B: 'CardiB'}, 
+      {C: 'CardiB'}, 
+      {D: 'Paul'}
+    ];
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // See the 3 instances of Person being assigned names at lines 3-5
+    // On line 7 skip to the end of the function because it has not been called yet to line 28
+    // Function changePerson is called at line 28 so we go back to line 7 to start the function
+    // If statment is true so person is assingned to CardiB and then the function beautifyPerson is fired
+    // at line 13 we start the function where our first log is, personB which has not been changed so we look to out parent and see person B is still 'ben'
+    // Then we move to the if statment on line 16 which is true
+    // personB is reassinged to person (cardiB), then on line 18 personC (Tom) is reassined to cardiB
+    // line 19 we log personC (cardiB)
+    // line 23 personC is reassinged to personA
+    // 25 we log personB which has not changed since it was reassigned on line 17 so it remains cardiB
+    // line 26 we complete the function so we now skip down to line 30 and log personC which was reassinged to personA at line 23 (paul)
   },
 
   exerciseB() {
