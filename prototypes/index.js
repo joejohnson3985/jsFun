@@ -1,3 +1,6 @@
+/*eslint-disable*/
+
+
 const { kitties } = require('./datasets/kitties');
 const { clubs } = require('./datasets/clubs');
 const { mods } = require('./datasets/mods');
@@ -24,21 +27,30 @@ const kittyPrompts = {
     // Return an array of just the names of kitties who are orange e.g.
     // ['Tiger', 'Snickers']
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
-    return result;
+    const result = kitties.
+        filter(function(kitties) {return kitties.color === 'orange'}).
+        map(kitties => {return kitties.name});
+        return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // Look into data set to see naming
+    // use filter prototype
+    // use a call back function to retun a new array
+    // only return kitties when their color property is deeply equal to orange
+    // Then we have to map to make sure we return only the name of the cat
+    // return the result
   },
 
   sortByAge() {
     // Sort the kitties by their age
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = kitties.
+    slice().
+    sort((a, b) => {return b.age - a.age});
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // 
   },
 
   growUp() {
@@ -55,7 +67,12 @@ const kittyPrompts = {
     // },
     // ...etc]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = kitties.
+    map(kitty => {
+        kitty.age += 2;
+        return kitty;
+    }).
+    sort((a, b) => {return b.age - a.age});
     return result;
   }
 };
@@ -79,19 +96,30 @@ const kittyPrompts = {
 // DATASET: clubs from ./datasets/clubs
 const clubPrompts = {
   membersBelongingToClubs() {
-    // Create an object whose keys are the names of people, and whose values are
-    // arrays that include the names of the clubs that person is a part of. e.g. 
-    // {
-    //   Louisa: ['Drama', 'Art'],
-    //   Pam: ['Drama', 'Art', 'Chess'],
-    //   ...etc
-    // }
+    const uniqueMembers = clubs.
+    reduce( (accum, curr) => {
+        accum.push(curr.members);
+        return accum;
+    }, []).flat(2).
+    reduce( (accum, curr) => {
+        if(accum.indexOf(curr) === -1) accum.push(curr);
+        return accum;
+    }, []);
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    var result = clubs.reduce((accum, curr) => {
+        let key = curr.club;
+        uniqueMembers.forEach( member => {
+            if (curr.members.indexOf(member) === -1) {
+            } else {
+                if (!accum[member]) {
+                    accum[member] = [];
+                }
+                accum[member].push(key);
+            }
+        })
+        return accum;
+    }, {})
     return result;
-
-    // Annotation:
-    // Write your annotation here as a comment
   }
 };
 
@@ -123,7 +151,17 @@ const modPrompts = {
     //   { mod: 4, studentsPerInstructor: 8 }
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = mods.
+    reduce( (accum, curr) => {
+        // mod number
+        accum.push({mod: curr.mod, studentsPerInstructor: curr.students/curr.instructors})
+        // console.log(curr.students)
+        // console.log(curr.instructors)
+        // console.log(accum)
+        //students / instructor 
+        //
+        return accum 
+    }, []);
     return result;
 
     // Annotation:
@@ -157,8 +195,16 @@ const cakePrompts = {
     //    { flavor: 'yellow', inStock: 14 },
     //    ..etc
     // ]
-
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+// create and array of objects with reduce
+// first key should be flavor
+// grab flavor from cakeFlavor
+// grab instock value
+    const result = cakes.
+    reduce((accum, curr) => {
+        accum.push({flavor: curr.cakeFlavor, inStock: curr.inStock})
+        // console.log(accum)
+        return accum
+    }, []);
     return result;
 
     // Annotation:
@@ -186,7 +232,8 @@ const cakePrompts = {
     // ..etc
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = cakes.
+    filter(function(cakes) {return cakes.inStock > 0});
     return result;
 
     // Annotation:
@@ -196,8 +243,14 @@ const cakePrompts = {
   totalInventory() {
     // Return the total amount of cakes in stock e.g.
     // 59
+    const cakeInventory = cakes.reduce((accum, cake) => {
+        accum.push(cake.inStock)
+        return accum
+    }, [])
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = cakeInventory.reduce((accum, curr) => {
+        return accum + curr;
+    }, 0)
     return result;
 
     // Annotation:
@@ -209,7 +262,10 @@ const cakePrompts = {
     // every cake in the dataset e.g.
     // ['dutch process cocoa', 'toasted sugar', 'smoked sea salt', 'berries', ..etc]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = cakes.reduce((accum, curr) => {
+        if(accum.indexOf(curr.toppings) === -1) accum.push(curr.toppings)
+        return accum
+    }, []).join();
     return result;
 
     // Annotation:
