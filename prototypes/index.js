@@ -45,12 +45,14 @@ const kittyPrompts = {
     // Sort the kitties by their age
 
     const result = kitties.
-    slice().
     sort((a, b) => {return b.age - a.age});
     return result;
 
     // Annotation:
-    // 
+    // use sort on kitties array with parameters of a and b 
+    // a represents the first element in comparison and b represents the second
+    // sort in descending order with b - a 
+    // return the result
   },
 
   growUp() {
@@ -77,9 +79,11 @@ const kittyPrompts = {
   }
 };
 
-
-
-
+// Annotation:
+// use map to create a new array
+// increase the age of each kittie by 2
+// return kitty
+// then use sort to put array in descending order
 
 
 // ---------------------------------------------------------------------------
@@ -123,6 +127,25 @@ const clubPrompts = {
   }
 };
 
+// Annotation:
+// create a varible of unique memebers
+// use reduce 
+// have our accumulator start as an empty array
+// push each array of memebers into the accumulator array
+// flatten the array of arrays into just an array of strings
+// reduce the new flat array
+// set the accumulator to an empty array
+// use a conditional that will not allow duplicates 
+// if it is not a duplicate then push the memeber name into the accumulator
+// return the accumulator
+// create varible of result and assign it to clubs
+// reduce clubs with the starting point of an empty object
+// create a varible of key and assign it to the current club inside the clubs array
+// itterate over uniqueMembers with for each
+// call back function with the condition of no duplicates
+// another condition if you the memeber is in the list but it is not inside the array
+// if conditon true then push the key into the accumlator object
+// return the accumulator
 
 
 
