@@ -284,11 +284,11 @@ const cakePrompts = {
     // Return an array of all unique toppings (no duplicates) needed to bake
     // every cake in the dataset e.g.
     // ['dutch process cocoa', 'toasted sugar', 'smoked sea salt', 'berries', ..etc]
-
-    const result = cakes.reduce((accum, curr) => {
-        if(accum.indexOf(curr.toppings) === -1) accum.push(curr.toppings)
-        return accum
-    }, []).join();
+    const allIngredients = cakes.reduce((accum, curr) => {
+        accum.push(curr.toppings)
+        return accum;
+    }, []).flat();
+    const result = [...new Set(allIngredients)];
     return result;
 
     // Annotation:
@@ -306,7 +306,19 @@ const cakePrompts = {
     //    ...etc
     // }
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const allIngredients = cakes.reduce((accum, curr) => {
+        accum.push(curr.toppings);
+        return accum;
+    }, []).flat();
+    const uniqueIngredients = [...new Set(allIngredients)];
+    const result = uniqueIngredients.reduce((accum, curr) => {
+        Object.assign(accum, {[curr]: 0})
+        return accum
+    }, {})
+    allIngredients.forEach( function(ingredient) {
+        result[ingredient]++;
+    })
+
     return result;
 
     // Annotation:
@@ -341,7 +353,9 @@ const classPrompts = {
     //   { roomLetter: 'G', program: 'FE', capacity: 29 }
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = classrooms.filter( function(classrooms) {
+        return classrooms.program === 'FE' 
+    });
     return result;
 
     // Annotation:
@@ -355,8 +369,19 @@ const classPrompts = {
     //   feCapacity: 110,
     //   beCapacity: 96
     // }
-
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    let feFilter = 0;
+    let beFilter = 0;
+    classrooms.forEach( function(classroom) {
+        if(classroom.program === 'FE') {
+             feFilter += classroom.capacity;console.log
+        } else {
+            beFilter += classroom.capacity;
+        }
+    })
+    const result = {
+        feCapacity: feFilter,
+        beCapacity: beFilter,
+    }
     return result;
 
     // Annotation:
@@ -366,7 +391,9 @@ const classPrompts = {
   sortByCapacity() {
     // Return the array of classrooms sorted by their capacity (least capacity to greatest)
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = classrooms.sort((a, b) => {
+        return a.capacity - b.capacity;
+    });
     return result;
 
     // Annotation:
@@ -396,7 +423,10 @@ const breweryPrompts = {
     // Return the total beer count of all beers for every brewery e.g.
     // 40
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = breweries.reduce((accum, brew) => {
+        accum += brew.beers.length;
+        return accum;
+    }, 0)
     return result;
 
     // Annotation:
@@ -412,7 +442,12 @@ const breweryPrompts = {
     // ...etc.
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = breweries.map(brew => ({
+        name: brew.name,
+        beerCount: brew.beers.length,
+    }));
+
+
     return result;
 
     // Annotation:
