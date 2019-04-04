@@ -458,8 +458,19 @@ const breweryPrompts = {
     // Return the beer which has the highest ABV of all beers
     // e.g.
     // { name: 'Barrel Aged Nature\'s Sweater', type: 'Barley Wine', abv: 10.9, ibu: 40 }
+    // take all beers and put in one array, then sort that array then pop the highest
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const beers = breweries.reduce((accum, brewery) => {
+        accum.push(brewery.beers)
+        return accum;
+    }, []).
+    flat().
+    sort( function(a, b) {
+        return a.abv - b.abv
+    })
+
+    const result = beers.pop();
+
     return result;
 
     // Annotation:
@@ -506,8 +517,23 @@ const turingPrompts = {
     //  { name: 'Pam', studentCount: 21 },
     //  { name: 'Robbie', studentCount: 18 }
     // ]
+    // use reduce on instructors
+    // instructor as current
+    // retun the accumulator
+    // set the accumulator to an array
+    // push into the accum as an object instructor.name
+    // 
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+
+   
+
+
+    const result = instructors.reduce((accum, instructor) => {
+        accum.push({name: instructor.name, 
+                    studentCount: cohorts[instructor.module-1].
+                    studentCount})
+        return accum;
+    }, [])
     return result;
 
     // Annotation:
