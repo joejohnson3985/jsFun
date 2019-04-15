@@ -100,26 +100,10 @@ const kittyPrompts = {
 // DATASET: clubs from ./datasets/clubs
 const clubPrompts = {
   membersBelongingToClubs() {
-    const uniqueMembers = clubs.
-    reduce( (accum, curr) => {
-        accum.push(curr.members);
-        return accum;
-    }, []).flat(2).
-    reduce( (accum, curr) => {
-        if(accum.indexOf(curr) === -1) accum.push(curr);
-        return accum;
-    }, []);
-
-    var result = clubs.reduce((accum, curr) => {
-        let key = curr.club;
-        uniqueMembers.forEach( member => {
-            if (curr.members.indexOf(member) === -1) {
-            } else {
-                if (!accum[member]) {
-                    accum[member] = [];
-                }
-                accum[member].push(key);
-            }
+    const result = clubs.reduce((accum, club) => {
+        club.members.forEach(member => {
+            !accum[member] ? (accum[member]) = [] : null;
+            accum[member].push(club.club);
         })
         return accum;
     }, {})
@@ -284,11 +268,11 @@ const cakePrompts = {
     // Return an array of all unique toppings (no duplicates) needed to bake
     // every cake in the dataset e.g.
     // ['dutch process cocoa', 'toasted sugar', 'smoked sea salt', 'berries', ..etc]
-
-    const result = cakes.reduce((accum, curr) => {
-        if(accum.indexOf(curr.toppings) === -1) accum.push(curr.toppings)
-        return accum
-    }, []).join();
+    const allIngredients = cakes.reduce((accum, curr) => {
+        accum.push(curr.toppings)
+        return accum;
+    }, []).flat();
+    const result = [...new Set(allIngredients)];
     return result;
 
     // Annotation:
@@ -306,7 +290,19 @@ const cakePrompts = {
     //    ...etc
     // }
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const allIngredients = cakes.reduce((accum, curr) => {
+        accum.push(curr.toppings);
+        return accum;
+    }, []).flat();
+    const uniqueIngredients = [...new Set(allIngredients)];
+    const result = uniqueIngredients.reduce((accum, curr) => {
+        Object.assign(accum, {[curr]: 0})
+        return accum
+    }, {})
+    allIngredients.forEach( function(ingredient) {
+        result[ingredient]++;
+    })
+
     return result;
 
     // Annotation:
@@ -341,7 +337,9 @@ const classPrompts = {
     //   { roomLetter: 'G', program: 'FE', capacity: 29 }
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = classrooms.filter( function(classrooms) {
+        return classrooms.program === 'FE' 
+    });
     return result;
 
     // Annotation:
@@ -355,8 +353,19 @@ const classPrompts = {
     //   feCapacity: 110,
     //   beCapacity: 96
     // }
-
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    let feFilter = 0;
+    let beFilter = 0;
+    classrooms.forEach( function(classroom) {
+        if(classroom.program === 'FE') {
+             feFilter += classroom.capacity;console.log
+        } else {
+            beFilter += classroom.capacity;
+        }
+    })
+    const result = {
+        feCapacity: feFilter,
+        beCapacity: beFilter,
+    }
     return result;
 
     // Annotation:
@@ -366,7 +375,9 @@ const classPrompts = {
   sortByCapacity() {
     // Return the array of classrooms sorted by their capacity (least capacity to greatest)
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = classrooms.sort((a, b) => {
+        return a.capacity - b.capacity;
+    });
     return result;
 
     // Annotation:
@@ -396,7 +407,10 @@ const breweryPrompts = {
     // Return the total beer count of all beers for every brewery e.g.
     // 40
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = breweries.reduce((accum, brew) => {
+        accum += brew.beers.length;
+        return accum;
+    }, 0)
     return result;
 
     // Annotation:
@@ -412,7 +426,12 @@ const breweryPrompts = {
     // ...etc.
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = breweries.map(brew => ({
+        name: brew.name,
+        beerCount: brew.beers.length,
+    }));
+
+
     return result;
 
     // Annotation:
@@ -423,8 +442,19 @@ const breweryPrompts = {
     // Return the beer which has the highest ABV of all beers
     // e.g.
     // { name: 'Barrel Aged Nature\'s Sweater', type: 'Barley Wine', abv: 10.9, ibu: 40 }
+    // take all beers and put in one array, then sort that array then pop the highest
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const beers = breweries.reduce((accum, brewery) => {
+        accum.push(brewery.beers)
+        return accum;
+    }, []).
+    flat().
+sort( function(a, b) {
+        return a.abv - b.abv
+    })
+
+    const result = beers.pop();
+
     return result;
 
     // Annotation:
@@ -471,8 +501,23 @@ const turingPrompts = {
     //  { name: 'Pam', studentCount: 21 },
     //  { name: 'Robbie', studentCount: 18 }
     // ]
+    // use reduce on instructors
+    // instructor as current
+    // retun the accumulator
+    // set the accumulator to an array
+    // push into the accum as an object instructor.name
+    // 
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+
+   
+
+
+    const result = instructors.reduce((accum, instructor) => {
+        accum.push({name: instructor.name, 
+                    studentCount: cohorts[instructor.module-1].
+                    studentCount})
+        return accum;
+    }, [])
     return result;
 
     // Annotation:
@@ -560,7 +605,15 @@ const bossPrompts = {
     //   { bossName: 'Scar', sidekickLoyalty: 16 }
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = Object.values(bosses).map(boss => ({
+        bossName: boss.name,
+        sidekickLoyalty: sidekicks.reduce((accum, sidekick) => {
+            if(sidekick.boss === boss.name) {
+                accum += sidekick.loyaltyToBoss
+            }
+            return accum;
+        }, 0)
+    })) 
     return result;
 
     // Annotation:
@@ -602,7 +655,14 @@ const astronomyPrompts = {
     //     color: 'red' }
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = stars.reduce((accum, star) => {
+        Object.values(constellations).forEach(constellation => {
+            if(constellation.stars.includes(star.name)) {
+                accum.push(star)
+            }
+        })
+        return accum;
+    }, []);
     return result;
 
     // Annotation:
@@ -619,8 +679,11 @@ const astronomyPrompts = {
     //   orange: [{obj}],
     //   red: [{obj}]
     // }
-
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = stars.reduce((accum, star) => {
+        !accum[star.color] ? (accum[star.color] = []) : null
+        accum[star.color].push(star)
+        return accum;
+    }, {})
     return result;
 
     // Annotation:
@@ -640,7 +703,7 @@ const astronomyPrompts = {
     //   'Orion',
     //   'Centaurus' ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = stars.map(star => star.constellation);
     return result;
 
     // Annotation:
