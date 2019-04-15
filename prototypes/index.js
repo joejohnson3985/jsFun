@@ -100,26 +100,10 @@ const kittyPrompts = {
 // DATASET: clubs from ./datasets/clubs
 const clubPrompts = {
   membersBelongingToClubs() {
-    const uniqueMembers = clubs.
-    reduce( (accum, curr) => {
-        accum.push(curr.members);
-        return accum;
-    }, []).flat(2).
-    reduce( (accum, curr) => {
-        if(accum.indexOf(curr) === -1) accum.push(curr);
-        return accum;
-    }, []);
-
-    var result = clubs.reduce((accum, curr) => {
-        let key = curr.club;
-        uniqueMembers.forEach( member => {
-            if (curr.members.indexOf(member) === -1) {
-            } else {
-                if (!accum[member]) {
-                    accum[member] = [];
-                }
-                accum[member].push(key);
-            }
+    const result = clubs.reduce((accum, club) => {
+        club.members.forEach(member => {
+            !accum[member] ? (accum[member]) = [] : null;
+            accum[member].push(club.club);
         })
         return accum;
     }, {})
@@ -465,7 +449,7 @@ const breweryPrompts = {
         return accum;
     }, []).
     flat().
-    sort( function(a, b) {
+sort( function(a, b) {
         return a.abv - b.abv
     })
 
@@ -621,7 +605,15 @@ const bossPrompts = {
     //   { bossName: 'Scar', sidekickLoyalty: 16 }
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = Object.values(bosses).map(boss => ({
+        bossName: boss.name,
+        sidekickLoyalty: sidekicks.reduce((accum, sidekick) => {
+            if(sidekick.boss === boss.name) {
+                accum += sidekick.loyaltyToBoss
+            }
+            return accum;
+        }, 0)
+    })) 
     return result;
 
     // Annotation:
@@ -663,7 +655,14 @@ const astronomyPrompts = {
     //     color: 'red' }
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = stars.reduce((accum, star) => {
+        Object.values(constellations).forEach(constellation => {
+            if(constellation.stars.includes(star.name)) {
+                accum.push(star)
+            }
+        })
+        return accum;
+    }, []);
     return result;
 
     // Annotation:
@@ -680,8 +679,11 @@ const astronomyPrompts = {
     //   orange: [{obj}],
     //   red: [{obj}]
     // }
-
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = stars.reduce((accum, star) => {
+        !accum[star.color] ? (accum[star.color] = []) : null
+        accum[star.color].push(star)
+        return accum;
+    }, {})
     return result;
 
     // Annotation:
@@ -701,7 +703,7 @@ const astronomyPrompts = {
     //   'Orion',
     //   'Centaurus' ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = stars.map(star => star.constellation);
     return result;
 
     // Annotation:
